@@ -23,14 +23,15 @@ COPY . /var/www/html/
 # Create wp-config.php from environment variables
 RUN mv /var/www/html/wp-config-sample.php /var/www/html/wp-config.php.tmp
 
-# Create a script to generate wp-config.php
+# Create a script to generate wp-config.php with HTTPS support
 RUN echo '<?php' > /tmp/setup-wp-config.php && \
     echo '$config = file_get_contents("/var/www/html/wp-config.php.tmp");' >> /tmp/setup-wp-config.php && \
     echo '$config = str_replace("database_name_here", getenv("WORDPRESS_DB_NAME"), $config);' >> /tmp/setup-wp-config.php && \
     echo '$config = str_replace("username_here", getenv("WORDPRESS_DB_USER"), $config);' >> /tmp/setup-wp-config.php && \
     echo '$config = str_replace("password_here", getenv("WORDPRESS_DB_PASSWORD"), $config);' >> /tmp/setup-wp-config.php && \
     echo '$config = str_replace("localhost", getenv("WORDPRESS_DB_HOST"), $config);' >> /tmp/setup-wp-config.php && \
-    echo '$config = str_replace("define( '\''WP_DEBUG'\'' , false);", "define( '\''WP_DEBUG'\'' , false);\ndefine( '\''FS_METHOD'\'' , '\''direct'\'');", $config);' >> /tmp/setup-wp-config.php && \
+    echo '$https_config = "define('\''WP_DEBUG'\'', false);\ndefine('\''FS_METHOD'\'', '\''direct'\'');\ndefine('\''WP_HOME'\'', '\''https://'\'' . getenv('\''SERVER_NAME'\'') . '\'\'');\ndefine('\''WP_SITEURL'\'', '\''https://'\'' . getenv('\''SERVER_NAME'\'') . '\'\'');\ndefine('\''FORCE_SSL_ADMIN'\'', true);\$_SERVER'\''['\''REQUEST_SCHEME'\''] = '\''https'\'';";' >> /tmp/setup-wp-config.php && \
+    echo '$config = str_replace("define( '\''WP_DEBUG'\'' , false);", $https_config, $config);' >> /tmp/setup-wp-config.php && \
     echo 'file_put_contents("/var/www/html/wp-config.php", $config);' >> /tmp/setup-wp-config.php && \
     echo '?>' >> /tmp/setup-wp-config.php
 
