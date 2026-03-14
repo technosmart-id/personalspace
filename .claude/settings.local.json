@@ -6,7 +6,10 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git branch:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(curl -s -H \"x-api-key: ufWytQueaInHoLBkitizRaDaIvIxoLjHMwgwLnJiwPjntQVSISESbfdlelbowFOd\" \"http://194.31.53.215:3000/api/settings.getOpenApiDocument\")",
+      "Bash(python:*)",
+      "Bash(curl:*)"
     ]
   }
 }
